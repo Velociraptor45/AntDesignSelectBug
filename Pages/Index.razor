@@ -1,0 +1,55 @@
+﻿@page "/"
+@using SelectBug.Components
+
+<PageTitle>Index</PageTitle>
+
+<h1>Hello, world!</h1>
+
+<div>
+    <Button OnClick="AddModel">+</Button>
+    <Button OnClick="RemoveModel">-</Button>
+    @foreach(var model in _modelsDict)
+    {
+        <MyComponent
+            Models="model.Value"
+            EnableWorkaround="false"
+            DefaultValue="@(model.Key == 0 ? _item1Default : _item2Default)">
+        </MyComponent>
+    }
+</div>
+
+
+@code
+{
+    private readonly Dictionary<int, List<MyModel>> _modelsDict = new();
+    private readonly Guid _item1Default = Guid.NewGuid();
+    private readonly Guid _item2Default = Guid.NewGuid();
+    private readonly Guid _item3 = Guid.NewGuid();
+    
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+
+        _modelsDict.Add(0, new List<MyModel>
+        {
+            new(_item1Default, "Item1"),
+            new(_item2Default, "Item2"),
+            new(_item3, "Item3"),
+        });
+    }
+
+    private void RemoveModel()
+    {
+        _modelsDict.Remove(0);
+    }
+
+    private void AddModel()
+    {
+        _modelsDict.Add(_modelsDict.Count, new List<MyModel>
+        {
+            new(_item1Default, "Item1"),
+            new(_item2Default, "Item2"),
+            new(_item3, "Item3"),
+        });
+    }
+}

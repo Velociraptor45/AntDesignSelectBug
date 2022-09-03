@@ -1,0 +1,38 @@
+﻿<div>
+    <Select DataSource="Models"
+            TItem="MyModel"
+            TItemValue="Guid"
+            DefaultValue="DefaultValue"
+            ValueName="@nameof(MyModel.Id)"
+            LabelName="@nameof(MyModel.Name)"
+            IgnoreItemChanges="false"
+            OnSelectedItemChanged="@OnChanged"
+            @ref="_select">
+    </Select>
+    <div>@DefaultValue</div>
+</div>
+
+
+@code {
+    [Parameter] public List<MyModel> Models { get; set; }
+    [Parameter] public Guid DefaultValue { get; set; }
+    [Parameter] public bool EnableWorkaround { get; set; }
+
+    private Guid _current;
+    private Select<Guid, MyModel>? _select;
+
+    protected override void OnParametersSet()
+    {
+        base.OnParametersSet();
+
+        if(_select is not null && EnableWorkaround)
+        {
+            _select.Value = _current;
+        }
+    }
+
+    private void OnChanged(MyModel model)
+    {
+        _current = model.Id;
+    }
+}
